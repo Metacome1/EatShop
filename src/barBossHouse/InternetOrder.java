@@ -165,6 +165,7 @@ public class InternetOrder implements Order {
 
     public String[] itemsName() {
         String[] itemsName = new String[size];
+        String[] helpMe = new String[0];
         if (size != 0) {
             //TODO нахрен массивы иди по листу COMPLITED
             int index = 0;
@@ -190,11 +191,11 @@ public class InternetOrder implements Order {
                 addName = false;
                 listNode = listNode.getNext();
             }
-            String[] helpMe = new String[index];
+            helpMe = new String[index];
             System.arraycopy(itemsName, 0, helpMe, 0, index);
             return helpMe;
         }
-        return itemsName;
+        return helpMe;
     }
 
     public Customer getCustomer (){
