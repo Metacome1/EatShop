@@ -43,7 +43,7 @@ public class Main {
         System.out.println(drink1.toString());
 
         Order order1 = new TableOrder();
-order1.add(menuItem1);
+        order1.add(menuItem1);
         order1.add(menuItem2);
         order1.add(menuItem3);
         order1.add(menuItem4);
@@ -51,14 +51,16 @@ order1.add(menuItem1);
         System.out.println(order1.toString());
 
         System.out.println();
-order1.remove(menuItem3);
+        order1.remove(menuItem3);
 
         System.out.println(order1.toString());
 
         InternetOrder internetOrder = new InternetOrder(customer3);
         internetOrder.add(menuItem2);
+        internetOrder.add(menuItem2);
         internetOrder.add(menuItem3);
         internetOrder.add(menuItem4);
+        internetOrder.add(menuItem2);
         internetOrder.add(drink1);
         System.out.println();
         System.out.println(internetOrder.toString());
@@ -66,12 +68,18 @@ order1.remove(menuItem3);
         internetOrder.remove(menuItem2);
         System.out.println(internetOrder.toString());
 
+        internetOrder.removeAll(menuItem2);
+        System.out.println(internetOrder.toString());
 
+        internetOrder.add(menuItem2);
+        internetOrder.add(menuItem2);
+        internetOrder.add(menuItem2);
 
-
-
-
-
+        String[] newnew;
+        newnew = internetOrder.itemsName();
+        for (int i = 0; i < newnew.length; i++) {
+            System.out.println(newnew[i]);
+        }
 
 
 

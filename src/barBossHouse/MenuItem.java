@@ -48,7 +48,7 @@ public abstract class MenuItem {
 
         MenuItem menuItem = (MenuItem) obj;
 
-        return (menuItem.hashCode() == (name.hashCode() ^ cost));
+        return (name.equals(menuItem.getName()) && cost == menuItem.getCost());
     }
 
     @Override

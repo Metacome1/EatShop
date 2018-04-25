@@ -1,5 +1,8 @@
 package barBossHouse;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 // todo переписать список СДЕЛАНО
 public class InternetOrder implements Order {
     private int size;
@@ -37,7 +40,7 @@ public class InternetOrder implements Order {
         //todo хранишь ссылку на предыдущий нод COMPLITED
         ListNode listNode = head;
         while (listNode != null) {
-            if (head.getValue().getName().equals(dishName)) {
+            if (listNode.getValue().getName().equals(dishName)) {
                 if (listNode.getPrev() == null) {
                     listNode.getNext().setPrev(null);
                     head = listNode.getNext();
@@ -62,8 +65,7 @@ public class InternetOrder implements Order {
         //todo хранишь ссылку на предыдущий нод COMPLITED
         ListNode listNode = head;
         while (listNode != null) {
-            if (head.getValue().equals(menuItem)) {
-
+            if (listNode.getValue().equals(menuItem)) {
                 if (listNode.getPrev() == null) {
                     listNode.getNext().setPrev(null);
                     head = listNode.getNext();
@@ -90,9 +92,9 @@ public class InternetOrder implements Order {
         ListNode listNode = head;
         while (listNode != null) {
            if (remove(dishName)){
-               remove(dishName);
                deletedDishCount++;
            }
+            listNode = listNode.getNext();
         }
         return deletedDishCount;
     }
@@ -103,9 +105,9 @@ public class InternetOrder implements Order {
         ListNode listNode = head;
         while (listNode != null) {
             if (remove(menuItem)){
-                remove(menuItem);
                 deletedDishCount++;
             }
+            listNode = listNode.getNext();
         }
         return deletedDishCount;
     }
@@ -162,7 +164,7 @@ public class InternetOrder implements Order {
     }
 
     public String[] itemsName() {
-        String[] itemsName = new String[0];
+        String[] itemsName = new String[size];
         if (size != 0) {
             //TODO нахрен массивы иди по листу COMPLITED
             int index = 0;
@@ -177,21 +179,20 @@ public class InternetOrder implements Order {
             boolean addName = false;
              listNode = head;
             for (int i = 0; i < size; i++) {
-                if (strings[0].isEmpty()) strings[i] = listNode.getValue().getName();
                 for (int j = 0; j < size; j++) {
-                    if (strings[j].isEmpty()) break;
+                    if (itemsName[j] == null) break;
                     if (listNode.getValue().getName().equals(strings[j])) addName = true;
                 }
                 if (!addName) {
-                    strings[index] = listNode.getValue().getName();
+                    itemsName[index] = listNode.getValue().getName();
                     index++;
                 }
                 addName = false;
                 listNode = listNode.getNext();
             }
-            itemsName = new String[index];
-            System.arraycopy(strings, 0, itemsName, 0, itemsName.length);
-            return itemsName;
+            String[] helpMe = new String[index];
+            System.arraycopy(itemsName, 0, helpMe, 0, index);
+            return helpMe;
         }
         return itemsName;
     }
