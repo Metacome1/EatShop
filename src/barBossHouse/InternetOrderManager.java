@@ -85,7 +85,6 @@ public class InternetOrderManager implements OrdersManager {
         return itemQuantity;
     }
 
-    //todo аналогично itemQuantity(String string) COMPLITED
     public int itemQuantity(MenuItem menuItem) {
         int itemQuantity = 0;
         QueueNode queueNode = head;

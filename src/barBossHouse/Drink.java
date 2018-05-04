@@ -43,7 +43,6 @@ final public class Drink extends MenuItem implements Alcoholable {
     public DrinkTypeEnum getType(){
         return type;
     }
-    //todo вызывай версию суперкласса COMPLITED
     @Override
     public String toString() {
         return
@@ -54,9 +53,9 @@ final public class Drink extends MenuItem implements Alcoholable {
                 + (getDescription().isEmpty() ? "" : getDescription());
     }
 
-    //todo вызывай версию суперкласса COMPLITED
     @Override
     public boolean equals(Object obj){
+        //todo сделай так же как в Dish
         if (obj == this)
             return true;
 
@@ -68,7 +67,6 @@ final public class Drink extends MenuItem implements Alcoholable {
         return (type.equals(drink.getType()) & super.equals(drink) & alcoholVol == drink.getAlcoholVol());
     }
 
-    //todo вызывай версию суперкласса COMPLITED
     @Override
     public int hashCode(){
         return  super.hashCode()

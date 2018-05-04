@@ -3,7 +3,6 @@ package barBossHouse;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-// todo переписать список СДЕЛАНО
 public class InternetOrder implements Order {
     private int size;
     private ListNode head;
@@ -35,21 +34,17 @@ public class InternetOrder implements Order {
         return true;
     }
 
-    //TODO remove работают либо через жопу, либо не работают COMPLITED
     public boolean remove(String dishName) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
         ListNode listNode = head;
         while (listNode != null) {
             if (listNode.getValue().getName().equals(dishName)) {
-                if (listNode.getPrev() == null) {
+                if (listNode == head) {
                     listNode.getNext().setPrev(null);
                     head = listNode.getNext();
-                }
-                if (listNode.getNext() == null) {
+                } else if (listNode == tail) {
                     listNode.getPrev().setNext(null);
                     tail = listNode.getPrev();
-                }
-                if (listNode.getPrev() != null && listNode.getNext() != null) {
+                } else {
                     listNode.getPrev().setNext(listNode.getNext());
                     listNode.getNext().setPrev(listNode.getPrev());
                 }
@@ -62,7 +57,6 @@ public class InternetOrder implements Order {
     }
 
     public boolean remove(MenuItem menuItem) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
         ListNode listNode = head;
         while (listNode != null) {
             if (listNode.getValue().equals(menuItem)) {
@@ -87,7 +81,8 @@ public class InternetOrder implements Order {
     }
 
     public int removeAll(String dishName) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
+        //todo хранишь ссылку на предыдущий нод
+        //todo без вызова remove - идешь по нодам, сравниваешь имена и сразу удаляешь
         int deletedDishCount = 0;
         ListNode listNode = head;
         while (listNode != null) {
@@ -100,7 +95,8 @@ public class InternetOrder implements Order {
     }
 
     public int removeAll(MenuItem menuItem) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
+        //todo хранишь ссылку на предыдущий нод
+        //todo без вызова remove - идешь по нодам, сравниваешь имена и сразу удаляешь
         int deletedDishCount = 0;
         ListNode listNode = head;
         while (listNode != null) {
@@ -139,13 +135,13 @@ public class InternetOrder implements Order {
         return allCost;
     }
 
-    public int itemQuantity(String NameInArray){
+    public int itemQuantity(String name){
         ListNode listNode;
         int allNameInArray;
         allNameInArray = 0;
         listNode = tail;
         for (int i = 0; i < size; i++){
-            if (listNode.getValue().getName().equals(NameInArray))allNameInArray++;
+            if (listNode.getValue().getName().equals(name))allNameInArray++;
             listNode = listNode.getNext();
         }
         return allNameInArray;
@@ -167,7 +163,7 @@ public class InternetOrder implements Order {
         String[] itemsName = new String[size];
         String[] helpMe = new String[0];
         if (size != 0) {
-            //TODO нахрен массивы иди по листу COMPLITED
+            //TODO рефакторь
             int index = 0;
             String[] strings = new String[size];
             ListNode listNode = head;

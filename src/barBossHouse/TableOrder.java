@@ -4,7 +4,6 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 
-//TODO никаких result - переименовывай COMPLITED
 public class TableOrder implements Order {
     private int size;
     private static final int DEFAULT_SIZE = 16;

@@ -165,7 +165,6 @@ public int midlCost500(){
         return (((double) cents) / 100);
     }
 
-    //todo аналогично InternetOrderManager COMPLITED
     public int itemQuantity(String name)
     {
         int itemQuantity = 0;
@@ -180,8 +179,6 @@ public int midlCost500(){
         }
         return itemQuantity;
     }
-
-    //todo аналогично InternetOrderManager COMPLITED
 
     public int itemQuantity(MenuItem menuItem)
     {
