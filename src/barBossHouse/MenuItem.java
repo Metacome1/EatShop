@@ -14,6 +14,7 @@ public abstract class MenuItem {
 
     protected MenuItem(String dishName, String dishDescription, int dishCost)
     {
+        if(dishCost < 0) throw new IllegalArgumentException("Вам не будут платить за еду");
         name = dishName;
         description = dishDescription;
         cost = dishCost;
@@ -35,7 +36,9 @@ public abstract class MenuItem {
 
     @Override
     public String toString() {
-        return ((name.isEmpty() ? "" : name + ",") + (cost == 0 ? "" : cost + "р."));
+       return String.format("%1$s%2$s",
+                (name != null && !name.isEmpty()) ? name : "",
+                (cost != 0) ? ", " + cost + "р.": "").trim();
     }
 
     @Override

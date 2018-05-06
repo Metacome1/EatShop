@@ -1,5 +1,7 @@
 package barBossHouse;
 
+import java.time.LocalDateTime;
+
 public interface Order {
     boolean add(MenuItem menuItem);
 
@@ -34,4 +36,8 @@ public interface Order {
     public boolean equals(Object obj);
 
     public int hashCode();
+
+    LocalDateTime getLocalDateTime();
+
+    void setLocalDateTime(LocalDateTime localDateTime);
 }

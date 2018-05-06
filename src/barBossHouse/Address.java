@@ -18,7 +18,13 @@ final public class Address {
         this.apartamentNumber = -1;
     }
 
+
+
     public Address(String cityName, int zipCode, String streetName, int buildingNumber, char buildingLetter, int apartamentNumber) {
+        if(zipCode < 0) throw new IllegalArgumentException("Введите не отридцательный  почтовый индекс");
+        if(buildingNumber < 0) throw new IllegalArgumentException("Введите не отридцательный номер дома");
+        if(apartamentNumber < 0) throw new IllegalArgumentException("Введите не отридцательный номер квартиры");
+        if(Character.isDigit(buildingLetter)) throw new IllegalArgumentException("Введите корректную букву дома");
         this.cityName = cityName;
         this.zipCode = zipCode;
         this.streetName = streetName;
@@ -28,6 +34,9 @@ final public class Address {
     }
 
     public Address(String streetName, int buildingNumber, char buildingLetter, int apartamentNumber) {
+        if(buildingNumber < 0) throw new IllegalArgumentException("Введите не отридцательный номер дома");
+        if(apartamentNumber < 0) throw new IllegalArgumentException("Введите не отридцательный номер квартиры");
+        if(Character.isDigit(buildingLetter)) throw new IllegalArgumentException("Введите корректную букву дома");
         this.streetName = streetName;
         this.buildingNumber = buildingNumber;
         this.buildingLetter = buildingLetter;
@@ -61,7 +70,17 @@ final public class Address {
     }
     @Override
     public String toString() {
-    return getClass().getSimpleName() + ":" + (cityName.isEmpty()  ? "" :cityName + " ") + (zipCode == -1 ? "":zipCode + ",") + (streetName.isEmpty() ? "": streetName + " ") + (buildingNumber == -1 ? "" : buildingNumber) + (buildingLetter == ' ' ? "" : buildingLetter + "-") + (apartamentNumber == -1 ? "" : apartamentNumber);
+
+        return  String.format("%1$s%2$s%3$s%4$s%5$s%6$s%7$s",
+                getClass().getSimpleName() + ": ",
+                (cityName != null && !cityName.isEmpty()) ? cityName : "",
+                (zipCode != -1) ? ", " + zipCode: "",
+                (streetName != null && !streetName.isEmpty()) ? ", " + streetName : "",
+                (buildingNumber != -1) ? ", " + buildingNumber: "",
+                (buildingLetter != ' ') ? "-" + buildingLetter: "",
+                (apartamentNumber != -1) ? ", " + apartamentNumber : "").trim();
+
+       // return getClass().getSimpleName() + ":" + (cityName.isEmpty()  ? "" :cityName + " ") + (zipCode == -1 ? "":zipCode + ",") + (streetName.isEmpty() ? "": streetName + " ") + (buildingNumber == -1 ? "" : buildingNumber) + (buildingLetter == ' ' ? "" : buildingLetter + "-") + (apartamentNumber == -1 ? "" : apartamentNumber);
 }
 
 @Override

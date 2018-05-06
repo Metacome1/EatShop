@@ -17,10 +17,11 @@ final public class Drink extends MenuItem implements Alcoholable {
         this.type = type;
     }
 
-    public Drink(String dishName, String dishDescription, int dishCost, DrinkTypeEnum type) {
+    public Drink(String dishName, String dishDescription, int dishCost, double alcoholVole, DrinkTypeEnum type) {
         super(dishName, dishDescription, dishCost);
+        if(alcoholVole < 0 && alcoholVole> 100) throw new IllegalArgumentException("Слишком много или мало градусов у алкоголя");
         this.type = type;
-        this.alcoholVol = 0;
+        this.alcoholVol = alcoholVole;
     }
 
     @Override
@@ -43,28 +44,19 @@ final public class Drink extends MenuItem implements Alcoholable {
     public DrinkTypeEnum getType(){
         return type;
     }
+
     @Override
     public String toString() {
-        return
-                super.toString()
-                + " "
-                + (type)
-                + (alcoholVol == 0 ? (" Alcohol: "  + alcoholVol + "%.") : (""))
-                + (getDescription().isEmpty() ? "" : getDescription());
+        return super.toString() + String.format("%1$s%2$s%3$s",
+                (type),
+                (getDescription() != null && !getDescription().isEmpty()) ? " " + getDescription() : "",
+                (alcoholVol != 0) ? ", " + alcoholVol + "р.": "").trim();
     }
 
+    //todo сделай так же как в Dish COMPLITED
     @Override
     public boolean equals(Object obj){
-        //todo сделай так же как в Dish
-        if (obj == this)
-            return true;
-
-        if (obj == null || obj.getClass() != this.getClass())
-            return false;
-
-        Drink drink = (Drink) obj;
-
-        return (type.equals(drink.getType()) & super.equals(drink) & alcoholVol == drink.getAlcoholVol());
+        return (super.equals(obj) && getDescription().equals(((MenuItem) obj).getDescription()));
     }
 
     @Override

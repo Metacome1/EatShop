@@ -1,45 +1,65 @@
 package barBossHouse;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 
 
+//ODO никаких result - переименовывай COMPLITED
 public class TableOrder implements Order {
     private int size;
     private static final int DEFAULT_SIZE = 16;
     private MenuItem[] menuItems;
     private Customer customer;
+    private LocalDateTime localDateTime;
 
     public TableOrder() {
         this.size = 0;
         this.menuItems = new MenuItem[DEFAULT_SIZE];
+        this.localDateTime = LocalDateTime.now();
     }
 
 
     public TableOrder(int dishCount, Customer customer) {
         this(new MenuItem[dishCount], customer);
+        this.localDateTime = LocalDateTime.now();
     }
 
     public TableOrder(MenuItem[] dishesArray, Customer customer) {
         this.customer = customer;
         menuItems = dishesArray;
         size = getSize();
+        this.localDateTime = LocalDateTime.now();
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    public boolean add(MenuItem dish) {
+
+    public boolean add(MenuItem menuItem) {
+        if (menuItem instanceof Drink) {
+            Drink drink = (Drink) menuItem;
+            if (drink.getAlcoholVol() > 0 && customer.getAge() < 18) throw new UnlawfulActionException("Тебе нет 18");
+        }
         if (size > menuItems.length) {
             MenuItem[] newDish = new MenuItem[size * 2];
             System.arraycopy(menuItems, 0, newDish, 0, size);
             menuItems = newDish;
         }
-        menuItems[size] = dish;
+        menuItems[size] = menuItem;
         size++;
         return true;
     }
@@ -56,20 +76,20 @@ public class TableOrder implements Order {
         }
         return false;
     }
+
     public boolean remove(MenuItem menuItem) {
         for (int i = 0; i < size; i++) {
             if (menuItems[i].equals(menuItem)) {
                 for (int j = i; j < size; j++) {
-                    menuItems[j] = menuItems[j+1];
+                    menuItems[j] = menuItems[j + 1];
                 }
-                menuItems[size-1] = null;
+                menuItems[size - 1] = null;
                 size--;
                 return true;
             }
         }
         return false;
     }
-
 
 
     public int removeAll(String dishName) {
@@ -134,7 +154,7 @@ public class TableOrder implements Order {
         int itemQuatity;
         itemQuatity = 0;
         for (int i = 0; i < size; i++) {
-            if (menuItems[i].equals(menuItem))itemQuatity++;
+            if (menuItems[i].equals(menuItem)) itemQuatity++;
         }
         return itemQuatity;
     }
@@ -246,26 +266,24 @@ public class TableOrder implements Order {
     }
 
 
-
     private static void shiftArray(MenuItem[] array, int indx) {
         for (int i = indx; i < array.length + 1; i++)
             array[i] = array[i + 1];
     }
+
     @Override
     public String toString() {
         MenuItem[] menuItems = getItems();
-        String strings = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getClass().getSimpleName()).append(":").append(size).append("\n");
         for (int i = 0; i < menuItems.length; i++) {
-            strings += "\n" + menuItems[i].toString();
+            stringBuilder.append(menuItems[i].toString()).append("\n");
         }
-        return getClass().getSimpleName()
-                + ":"
-                + (size)
-                + strings;
+        return stringBuilder.toString();
     }
 
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         if (obj == this)
             return true;
 
@@ -274,7 +292,7 @@ public class TableOrder implements Order {
 
         TableOrder tableOrder = (TableOrder) obj;
 
-        if(this.size != tableOrder.getSize())
+        if (this.size != tableOrder.getSize())
             return false;
 
         int hashCodeTableOrder = 0;
@@ -288,15 +306,15 @@ public class TableOrder implements Order {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
-MenuItem[] menuItems = getItems();
+        MenuItem[] menuItems = getItems();
         for (int i = 0; i < menuItems.length; i++) {
             hash ^= menuItems.hashCode();
         }
-
         return customer.hashCode()
-                ^size
-                ^hash;
+                ^ size
+                ^ hash
+                ^ localDateTime.hashCode();
     }
 }

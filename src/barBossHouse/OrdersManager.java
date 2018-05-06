@@ -1,5 +1,7 @@
 package barBossHouse;
 
+import java.time.LocalDate;
+
 public interface OrdersManager {
 
     int itemQuantity (String str);
@@ -11,4 +13,10 @@ public interface OrdersManager {
     int ordersCostSummary();
 
     int ordersQuantity();
+
+    int countMenuItemsNowDay(LocalDate localDate);
+
+    InternetOrderManager getMenuItemNowDay(LocalDate localDate);
+
+    InternetOrderManager getMenuItemsCustomer(Customer customer);
 }

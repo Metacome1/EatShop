@@ -1,31 +1,36 @@
 package barBossHouse;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 final public class Customer {
     private String firstName;
     private String secondName;
-    private int age;
+    private LocalDate birthDate;
     private Address address;
-    public final static Customer MATURE_UNKNOWN_CUSTOMER = new Customer(21);
-    public final static Customer NOT_MATURE_UNKNOWN_CUSTOMER = new Customer(14);
+    public final static Customer MATURE_UNKNOWN_CUSTOMER = new Customer(LocalDate.now().minusYears(21));
+    public final static Customer NOT_MATURE_UNKNOWN_CUSTOMER = new Customer(LocalDate.now().minusYears(14));
 
     public Customer() {
         this.firstName = "";
         this.secondName = "";
-        this.age = -1;
+        this.birthDate = LocalDate.now();
         this.address = Address.EMPTY_ADDRESS;
     }
 
-    public Customer(int age) {
+    public Customer(LocalDate birthDate) {
+        if(birthDate.isAfter(LocalDate.now())) throw new IllegalArgumentException("Человек из будущего");
         this.firstName = "";
         this.secondName = "";
-        this.age = age;
+        this.birthDate = birthDate;
         this.address = Address.EMPTY_ADDRESS;
     }
 
-    public Customer(String firstName, String secondName, int age, Address address) {
+    public Customer(String firstName, String secondName, LocalDate birthDate, Address address) {
+        if(birthDate.isAfter(LocalDate.now())) throw new IllegalArgumentException("Человек из будущего");
         this.firstName = firstName;
         this.secondName = secondName;
-        this.age = age;
+        this.birthDate = birthDate;
         this.address = address;
     }
 
@@ -38,7 +43,8 @@ final public class Customer {
     }
 
     public int getAge() {
-        return age;
+        return Period.between(birthDate, LocalDate.now()).getYears();
+
     }
 
     public Address getAddress() {
@@ -46,7 +52,8 @@ final public class Customer {
     }
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ":" + (firstName.isEmpty() ? "" :firstName + " ") + (secondName.isEmpty() ? "":secondName) + ", " + (age == -1 ? "": age + " ") + address.toString();
+        StringBuilder builder = new StringBuilder();
+        return builder.append(getClass().getSimpleName()).append(":").append(firstName.isEmpty() ? "" :firstName + " ").append(secondName.isEmpty() ? "":secondName).append(", ").append(getAge()).append(" ").append(address.toString()).toString().trim();
     }
 
     @Override
@@ -59,14 +66,13 @@ final public class Customer {
 
         Customer customer = (Customer) obj;
 
-        return (firstName.equals(customer.getFirstName()) & secondName.equals(customer.getSecondName()) & age == customer.getAge() & address.equals(customer.getAddress()));
+        return (firstName.equals(customer.getFirstName()) & secondName.equals(customer.getSecondName()) & address.equals(customer.getAddress()));
     }
 
     @Override
     public int hashCode(){
         return firstName.hashCode()
                 ^ secondName.hashCode()
-                ^age
                 ^address.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 package barBossHouse;
 
+import java.time.LocalDate;
 import java.util.function.Predicate;
 
 public class TableOrdersManager implements OrdersManager {
@@ -25,10 +26,15 @@ public class TableOrdersManager implements OrdersManager {
         } else return null;
     }
 
-    public boolean addDishToOrder(int tableNumber, MenuItem dish) {
-        if (dish != null) {
+    public boolean addDishToOrder(int tableNumber, MenuItem menuItem) {
+        if(menuItem instanceof Drink) {
+            Drink drink = (Drink) menuItem;
+            if(drink.getAlcoholVol()>0 && orders[tableNumber].getCustomer().getAge()<18) throw new UnlawfulActionException("Тебе нет 18");
+        }
+        if (orders[tableNumber] != null) throw new NoFreeTableException("Столик под номером:" + tableNumber + " занят");
+        if (menuItem != null) {
             if (isValidNumber(tableNumber)) {
-                orders[tableNumber].add(dish);
+                orders[tableNumber].add(menuItem);
                 return true;
             }
         }
@@ -46,8 +52,7 @@ public class TableOrdersManager implements OrdersManager {
         for (int i = 0; i < orders.length; i++) {
             if (orders[i] == null) return i;
         }
-
-        return (-1);
+        throw new NoFreeTableException("Нет свободных столиков");
     }
 
     public int removeTableOrder(TableOrder tableOrder) {
@@ -165,6 +170,7 @@ public int midlCost500(){
         return (((double) cents) / 100);
     }
 
+    //odo аналогично InternetOrderManager COMPLITED
     public int itemQuantity(String name)
     {
         int itemQuantity = 0;
@@ -180,6 +186,8 @@ public int midlCost500(){
         return itemQuantity;
     }
 
+    //odo аналогично InternetOrderManager COMPLITED
+
     public int itemQuantity(MenuItem menuItem)
     {
         int itemQuantity = 0;
@@ -193,5 +201,33 @@ public int midlCost500(){
             return itemQuantity;
         }
         return itemQuantity;
+    }
+
+    @Override
+    public int countMenuItemsNowDay(LocalDate localDate) {
+        int countMenuItemsNowDay = 0;
+        LocalDate help;
+        help = orders[1].getLocalDateTime().toLocalDate();
+        for (int i = 0; i < orders.length ; i++) {
+            if (localDate.equals(orders[i].getLocalDateTime().toLocalDate()))countMenuItemsNowDay++;
+        }
+        return countMenuItemsNowDay;
+    }
+
+    @Override
+    public InternetOrderManager getMenuItemNowDay(LocalDate localDate){
+        InternetOrderManager internetOrderManager = new InternetOrderManager();
+        for (int i = 0; i < orders.length; i++) {
+            if(orders[i].getLocalDateTime().toLocalDate().equals(localDate)) internetOrderManager.push(orders[i]);
+        }
+        return internetOrderManager;
+    }
+
+    public InternetOrderManager getMenuItemsCustomer(Customer customer){
+        InternetOrderManager internetOrderManager = new InternetOrderManager();
+        for (int i = 0; i < orders.length; i++) {
+            if(orders[i].getCustomer().equals(customer))internetOrderManager.push(orders[i]);
+        }
+        return internetOrderManager;
     }
 }
