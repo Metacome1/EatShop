@@ -2,11 +2,8 @@ package barBossHouse;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
-
-//ODO никаких result - переименовывай COMPLITED
 public class TableOrder implements Order {
     private int size;
     private static final int DEFAULT_SIZE = 16;
@@ -49,20 +46,6 @@ public class TableOrder implements Order {
         this.customer = customer;
     }
 
-    public boolean add(MenuItem menuItem) {
-        if (menuItem instanceof Drink) {
-            Drink drink = (Drink) menuItem;
-            if (drink.getAlcoholVol() > 0 && customer.getAge() < 18) throw new UnlawfulActionException("Тебе нет 18");
-        }
-        if (size > menuItems.length) {
-            MenuItem[] newDish = new MenuItem[size * 2];
-            System.arraycopy(menuItems, 0, newDish, 0, size);
-            menuItems = newDish;
-        }
-        menuItems[size] = menuItem;
-        size++;
-        return true;
-    }
 
     public boolean remove(String dishName) {
         for (int i = 0; i < size; i++) {
@@ -211,7 +194,7 @@ public class TableOrder implements Order {
     public MenuItem[] sortedItemsByCostDesc() {
         if (size != 0) {
             MenuItem[] sortedItemsByCostDesc = getItems();
-            quickSortDishes(sortedItemsByCostDesc, 0, size - 1);
+            Arrays.sort(sortedItemsByCostDesc);
             return sortedItemsByCostDesc;
         }
         return null;
@@ -317,4 +300,379 @@ public class TableOrder implements Order {
                 ^ hash
                 ^ localDateTime.hashCode();
     }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        for (MenuItem m : menuItems) {
+            if (m.equals(o)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Object[] toArray() {
+        return Arrays.copyOf(menuItems, size);
+    }
+
+    @Override
+    public Iterator<MenuItem> iterator() {
+        return new Iterator<MenuItem>() {
+            int pos = 0;
+
+            @Override
+            public boolean hasNext() {
+                return pos < size;
+            }
+
+            @Override
+            public MenuItem next() {
+                if (pos >= size)
+                    throw new NoSuchElementException();
+                return menuItems[pos++];
+            }
+        };
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return (T[]) Arrays.copyOf(getItems(), size(), a.getClass());
+    }
+
+    @Override
+    public boolean add(MenuItem menuItem) {
+
+        if (menuItem instanceof Drink) {
+            Drink drink = (Drink) menuItem;
+            if (drink.getAlcoholVol() > 0 && customer.getAge() < 18) throw new UnlawfulActionException("Тебе нет 18");
+        }
+        if (size > menuItems.length) {
+            MenuItem[] newDish = new MenuItem[size * 2];
+            System.arraycopy(menuItems, 0, newDish, 0, size);
+            menuItems = newDish;
+        }
+        menuItems[size] = menuItem;
+        size++;
+        return true;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        for (int i = 0; i < size; i++) {
+            if (menuItems[i].equals(o)) {
+                remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public MenuItem remove(int index) {
+        if (index < 0 || index > size - 1)
+            throw new IndexOutOfBoundsException();
+
+        MenuItem menuItem = menuItems[index];
+
+        if (index < this.size - 1)
+            System.arraycopy(menuItems, index + 1, menuItems, index, this.size - (index + 1));
+        menuItems[size - 1] = null;
+        size--;
+
+        return menuItem;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!contains(o))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends MenuItem> c) {
+        boolean addAll = true;
+
+        if (size + c.size() > menuItems.length) {
+            MenuItem[] copyMenuItems = new MenuItem[this.size * 2];
+            System.arraycopy(this.menuItems, 0, copyMenuItems, 0, this.size);
+            this.menuItems = copyMenuItems;
+        }
+
+        for (MenuItem menuItem : c) {
+            addAll &= add(menuItem);
+        }
+        return addAll;
+    }
+
+    private void expand(int addSize) {
+        if (this.size + addSize > this.menuItems.length) {
+            MenuItem[] copyMenuItems = new MenuItem[this.size * 2 + addSize];
+            System.arraycopy(menuItems, 0, copyMenuItems, 0, this.size);
+            this.menuItems = copyMenuItems;
+        }
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends MenuItem> c) {
+        if (index < 0 || index > size - 1)
+            throw new IndexOutOfBoundsException();
+
+        int sizeCollection = c.size();
+        for (MenuItem o : c) {
+            if (contains(o))
+                sizeCollection--;
+        }
+        expand(sizeCollection);
+
+        if (index < size)
+            System.arraycopy(menuItems, index, menuItems, index + c.size(), menuItems.length - (index + c.size()));
+
+        if (c.size() == 0)
+            return false;
+
+        for (MenuItem o : c) {
+            if (!contains(o)) {
+                menuItems[index++] = o;
+                size++;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean deleted = false;
+        for (Object o : c) {
+            if (contains(o)) {
+                remove(o);
+                deleted = true;
+            }
+        }
+        return deleted;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        boolean saved = false;
+        for (MenuItem o : menuItems) {
+            if (!c.contains(o)) {
+                remove(o);
+                saved = true;
+            }
+        }
+        return saved;
+    }
+
+    public void clear() {
+        for (int i = 0; i < size; i++) {
+            menuItems[i] = null;
+        }
+        size = 0;
+    }
+
+    @Override
+    public MenuItem get(int index) {
+        if (index < 0 || index > size - 1)
+            throw new IndexOutOfBoundsException();
+        return menuItems[index];
+    }
+
+    @Override
+    public MenuItem set(int index, MenuItem element) {
+        if (index < 0 || index > size - 1)
+            throw new IndexOutOfBoundsException();
+        MenuItem menuItem = menuItems[index];
+        menuItems[index] = element;
+        return menuItem;
+    }
+
+    @Override
+    public void add(int index, MenuItem element) {
+        if (index < 0 || index >= size - 1)
+            throw new IndexOutOfBoundsException();
+        expand(1);
+
+        if (index < size - 1)
+            System.arraycopy(menuItems, index, menuItems, index + 1, size - index);
+
+        menuItems[index] = element;
+        if (size < menuItems.length)
+            size++;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        for(int i = 0; i < size; i++){
+            if(menuItems[i].equals(o))
+                return i;
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        for(int i = size - 1; i > -1; i--){
+            if(menuItems[i].equals(o))
+                return i;
+        }
+        return -1;
+    }
+
+    public ListIterator<MenuItem> listIterator() {
+        return listIterator(0);
+    }
+
+    @Override
+    public ListIterator<MenuItem> listIterator(int index) {
+        if(index < 0 || index > size - 1)
+            throw new IndexOutOfBoundsException();
+
+        TableOrder tableOrder = this;
+        return new ListIterator<MenuItem>() {
+            int pos = index;
+            int newElementPos = 0;
+
+            ListIteratorOperation lastOperation = ListIteratorOperation.NONE;
+
+            private void illegalState(){
+                switch (lastOperation){
+                    case NONE:
+                        throw new IllegalStateException("Не были вызваны методы \"next()\" или \"previous()\"");
+                    case ADD:
+                        throw new IllegalStateException("Последний вызов: \"add()\"");
+                    case REMOVE:
+                        throw new IllegalStateException("Последний вызов: \"remove()\"");
+                }
+            }
+
+            public boolean hasNext() {
+                return menuItems.length > pos;
+            }
+
+            public MenuItem next() {
+                switch (lastOperation) {
+                    case ADD:
+                        lastOperation = ListIteratorOperation.NEXT;
+                        return menuItems[pos];
+                    default:
+                        lastOperation = ListIteratorOperation.NEXT;
+                        if(pos >= size)
+                            throw new NoSuchElementException();
+                        return menuItems[pos++];
+                }
+            }
+
+            public boolean hasPrevious() {
+                return pos > 0;
+            }
+
+            public MenuItem previous() {
+                switch (lastOperation) {
+                    case ADD:
+                        lastOperation = ListIteratorOperation.PREVIOUS;
+                        pos = newElementPos;
+                        return menuItems[pos];
+                    default:
+                        lastOperation = ListIteratorOperation.PREVIOUS;
+                        if(pos < 0)
+                            throw new NoSuchElementException();
+                        return menuItems[pos--];
+                }
+            }
+
+            public int nextIndex() {
+                return pos + 1;
+            }
+
+            public int previousIndex() {
+                return pos - 1;
+            }
+
+            public void remove() {
+                switch (lastOperation) {
+                    case NEXT:
+                        tableOrder.remove(--pos);
+                        break;
+                    case PREVIOUS:
+                        tableOrder.remove(pos + 1);
+                        break;
+                    default:
+                        illegalState();
+                }
+                lastOperation = ListIteratorOperation.REMOVE;
+            }
+
+            public void set(MenuItem menuItem) {
+                switch (lastOperation) {
+                    case NEXT:
+                        tableOrder.set(pos - 1, menuItem);
+                        break;
+                    case PREVIOUS:
+                        tableOrder.set(pos + 1, menuItem);
+                        break;
+                    default:
+                        illegalState();
+                }
+                lastOperation = ListIteratorOperation.SET;
+            }
+
+            public void add(MenuItem menuItem) {
+                if(size == 0) {
+                    tableOrder.add(menuItem);
+                }
+                else{
+                    switch (lastOperation){
+                        case NONE:
+                            tableOrder.add(0, menuItem);
+                            pos++;
+                            break;
+                        case NEXT:
+                            newElementPos = pos - 1;
+                            if(pos - 1 < 0)
+                                tableOrder.add(0, menuItem);
+                            else
+                                tableOrder.add(newElementPos, menuItem);
+                            pos++;
+                            break;
+                        case PREVIOUS:
+                            newElementPos = pos + 2;
+                            if(pos + 2 > size - 1)
+                                tableOrder.add(menuItem);
+                            else
+                                tableOrder.add(newElementPos, menuItem);
+                            break;
+                    }
+                }
+                lastOperation = ListIteratorOperation.ADD;
+            }
+        };
+    }
+
+    @Override
+    public List<MenuItem> subList(int fromIndex, int toIndex){
+        if(fromIndex < 0 || toIndex > size || fromIndex > toIndex)
+            throw new IndexOutOfBoundsException();
+        if(fromIndex == toIndex)
+            return new TableOrder();
+        TableOrder subList = new TableOrder( toIndex - fromIndex, customer);
+
+        for (int i = fromIndex, j = 0; i < toIndex; i++, j++)
+            subList.menuItems[j] = menuItems[i];
+
+        subList.size = toIndex - fromIndex;
+        return subList;
+    }
+
 }

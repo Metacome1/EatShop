@@ -1,23 +1,27 @@
 package barBossHouse;
 
 import java.time.LocalDate;
+import java.util.*;
 import java.util.function.Predicate;
 
-public class TableOrdersManager implements OrdersManager {
+public class TableOrdersManager implements OrdersManager, List<Order> {
     private static final  int MIDLE_COST = 500;
     private static final int DEFAULT_CAPACITY_VALUE = 0;
     private TableOrder[] orders;
     private int capacity = DEFAULT_CAPACITY_VALUE;
 
+    TableOrdersManager(){}
+
     public TableOrdersManager(int tablesCount) {
         orders = new TableOrder[tablesCount];
+        capacity = tablesCount;
     }
 
     public void addOrder(int tableNumber, TableOrder newOrder) {
         if (newOrder != null & isValidNumber(tableNumber)) {
             orders[tableNumber] = newOrder;
             capacity++;
-        }
+        } else throw new AlreadyAddedException("this table is busy!");
     }
 
     public TableOrder getOrderByTableNumber(int tableNumber) {
@@ -166,11 +170,6 @@ public int midlCost500(){
         }
     }
 
-    private double transferInRub(int cents) {
-        return (((double) cents) / 100);
-    }
-
-    //odo аналогично InternetOrderManager COMPLITED
     public int itemQuantity(String name)
     {
         int itemQuantity = 0;
@@ -230,4 +229,354 @@ public int midlCost500(){
         }
         return internetOrderManager;
     }
+
+    @Override
+    public int size() {
+        return capacity;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return capacity == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        for (Order order: orders) {
+            if (order.equals(o))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<Order> iterator() {
+        return new Iterator<Order>() {
+            int pos = 0;
+
+            public boolean hasNext() {
+                return capacity > pos;
+            }
+
+            public Order next() {
+                if(pos >= capacity)
+                    throw new NoSuchElementException();
+                return orders[pos++];
+            }
+        };
+    }
+
+    @Override
+    public Object[] toArray() {
+        return getOrders();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return (T[]) Arrays.copyOf(getOrders(), size(), a.getClass());
+    }
+
+    @Override
+    public boolean add(Order order) {
+        int num = getFirstFreeTableNumber();
+        addOrder(num, (TableOrder) order);
+        return true;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        int n = indexOf(o);
+        if (n >= 0) {
+            freeTable(n);
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!contains(o))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Order> c) {
+        boolean addAll = true;
+        for (Order order: c) {
+            addAll &= add(order);
+        }
+        return addAll;
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends Order> c) {
+        Object[] orders = c.toArray();
+        for (Object order : orders) {
+            if (!add((Order) order)) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        Object[] orders = c.toArray();
+        for (Object order : orders) {
+            if (!remove(order)) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        boolean changed = false;
+        for (Order o: orders) {
+            if(!c.contains(o)){
+                remove(o);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    @Override
+    public void clear() {
+        for (int i = 0; i < capacity; i++) {
+            orders[i] = null;
+        }
+        capacity = 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+
+        if (obj == null || obj.getClass() != this.getClass())
+            return false;
+
+        TableOrdersManager tableOrdersManager = (TableOrdersManager) obj;
+
+        if(this.capacity != tableOrdersManager.capacity)
+            return false;
+
+        int firstHashCode = 0;
+        int secondHashCode = 0;
+
+        for (int i = 0; i < capacity; i++) {
+            firstHashCode += this.orders[i].hashCode();
+            secondHashCode += tableOrdersManager.orders[i].hashCode();
+        }
+
+        return firstHashCode == secondHashCode;
+    }
+
+    @Override
+    public int hashCode(){
+        return Arrays.hashCode(orders)
+                ^ capacity;
+    }
+
+    @Override
+    public Order get(int index) {
+        if(index < 0 || index > capacity - 1)
+            throw new IndexOutOfBoundsException();
+
+        return orders[index];
+    }
+
+    @Override
+    public Order set(int index, Order element) {
+        if (index > 0 & index < orders.length) {
+            Order order = orders[index];
+            orders[index] = (TableOrder) element;
+            return order;
+        }
+        return null;
+    }
+
+    @Override
+    public void add(int index, Order element) {
+        if (index >= 0 & index < orders.length) {
+            addOrder(index, (TableOrder) element);
+        }
+    }
+
+    @Override
+    public Order remove(int index) {
+        if (index >= 0 & index < orders.length) {
+            Order ord = orders[index];
+            freeTable(index);
+            return ord;
+        }
+        return null;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        Order order = (Order) o;
+        for (int i = 0; i < orders.length; i++) {
+            if (orders[i].equals(order)) return i;
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        Order ord = (Order) o;
+        for (int i = orders.length; i > 0; i--) {
+            if (orders[i].equals(ord)) return i;
+        }
+        return -1;
+    }
+
+    @Override
+    public ListIterator<Order> listIterator() {
+        return listIterator(0);
+    }
+
+    @Override
+    public ListIterator<Order> listIterator(int index) {
+        if(index < 0 || index > capacity - 1)
+            throw new IndexOutOfBoundsException();
+
+        TableOrdersManager tableOrdersManager = this;
+        return new ListIterator<Order>() {
+            int pos = index;
+            int newElementPos = 0;
+
+            ListIteratorOperation lastOperation = ListIteratorOperation.NONE;
+
+            private void illegalState(){
+                switch (lastOperation){
+                    case NONE:
+                        throw new IllegalStateException("Не были вызваны методы \"next()\" или \"previous()\"");
+                    case ADD:
+                        throw new IllegalStateException("Последний вызов: \"add()\"");
+                    case REMOVE:
+                        throw new IllegalStateException("Последний вызов: \"remove()\"");
+                }
+            }
+
+            public boolean hasNext() {
+                return orders.length > pos;
+            }
+
+            public Order next() {
+                switch (lastOperation) {
+                    case ADD:
+                        lastOperation = ListIteratorOperation.NEXT;
+                        return orders[pos];
+                    default:
+                        lastOperation = ListIteratorOperation.NEXT;
+                        if(pos >= capacity)
+                            throw new NoSuchElementException();
+                        return orders[pos++];
+                }
+            }
+
+            public boolean hasPrevious() {
+                return pos > 0;
+            }
+
+            public Order previous() {
+                switch (lastOperation) {
+                    case ADD:
+                        lastOperation = ListIteratorOperation.PREVIOUS;
+                        pos = newElementPos;
+                        return orders[pos];
+                    default:
+                        lastOperation = ListIteratorOperation.PREVIOUS;
+                        if(pos < 0)
+                            throw new NoSuchElementException();
+                        return orders[pos--];
+                }
+            }
+
+            public int nextIndex() {
+                return pos + 1;
+            }
+
+            public int previousIndex() {
+                return pos - 1;
+            }
+            public void remove() {
+                switch (lastOperation) {
+                    case NEXT:
+                        tableOrdersManager.remove(--pos);
+                        break;
+                    case PREVIOUS:
+                        tableOrdersManager.remove(pos + 1);
+                        break;
+                    default:
+                        illegalState();
+                }
+                lastOperation = ListIteratorOperation.REMOVE;
+            }
+
+            public void set(Order order) {
+                switch (lastOperation) {
+                    case NEXT:
+                        tableOrdersManager.set(pos - 1, order);
+                        break;
+                    case PREVIOUS:
+                        tableOrdersManager.set(pos + 1, order);
+                        break;
+                    default:
+                        illegalState();
+                }
+                lastOperation = ListIteratorOperation.SET;
+            }
+
+            public void add(Order order) {
+                if(capacity == 0) {
+                    tableOrdersManager.add(order);
+                }
+                else{
+                    switch (lastOperation){
+                        case NONE:
+                            tableOrdersManager.add(0, order);
+                            pos++;
+                            break;
+                        case NEXT:
+                            newElementPos = pos - 1;
+                            if(pos - 1 < 0)
+                                tableOrdersManager.add(0, order);
+                            else
+                                tableOrdersManager.add(newElementPos, order);
+                            pos++;
+                            break;
+                        case PREVIOUS:
+                            newElementPos = pos + 2;
+                            if(pos + 2 > capacity - 1)
+                                tableOrdersManager.add(order);
+                            else
+                                tableOrdersManager.add(newElementPos, order);
+                            break;
+                    }
+                }
+                lastOperation = ListIteratorOperation.ADD;
+            }
+        };
+    }
+
+    @Override
+    public List<Order> subList(int fromIndex, int toIndex){
+        if(fromIndex < 0 || toIndex > capacity || fromIndex > toIndex)
+            throw new IndexOutOfBoundsException();
+        if(fromIndex == toIndex)
+            return new TableOrdersManager();
+        TableOrdersManager subList = new TableOrdersManager(toIndex - fromIndex);
+
+        for (int i = fromIndex, j = 0; i < toIndex; i++, j++)
+            subList.orders[j] = orders[i];
+
+        subList.capacity = toIndex - fromIndex;
+
+        return subList;
+    }
+
+
+
 }

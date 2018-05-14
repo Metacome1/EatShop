@@ -1,8 +1,9 @@
 package barBossHouse;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
-public interface OrdersManager {
+public interface OrdersManager extends Collection<Order> {
 
     int itemQuantity (String str);
 

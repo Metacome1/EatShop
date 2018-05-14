@@ -1,8 +1,9 @@
 package barBossHouse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-public interface Order {
+public interface Order extends List<MenuItem> {
     boolean add(MenuItem menuItem);
 
     String[] itemsName();

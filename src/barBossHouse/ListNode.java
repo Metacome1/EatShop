@@ -8,6 +8,10 @@ public class ListNode {
     public ListNode() {
     }
 
+    ListNode(MenuItem value) {
+        this.value = value;
+    }
+
     public ListNode(ListNode prev, MenuItem value, ListNode next) {
         this.prev = prev;
         this.next = next;

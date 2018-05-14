@@ -1,20 +1,18 @@
 package barBossHouse;
 
 
-public abstract class MenuItem {
+public abstract class MenuItem implements java.lang.Comparable<MenuItem> {
     private static final int DEFAULT_COST = 0;
     private String name;
     private int cost;
     private String description;
 
-    protected MenuItem(String dishName, String dishDescription)
-    {
+    protected MenuItem(String dishName, String dishDescription) {
         this(dishName, dishDescription, DEFAULT_COST);
     }
 
-    protected MenuItem(String dishName, String dishDescription, int dishCost)
-    {
-        if(dishCost < 0) throw new IllegalArgumentException("Вам не будут платить за еду");
+    protected MenuItem(String dishName, String dishDescription, int dishCost) {
+        if (dishCost < 0) throw new IllegalArgumentException("Вам не будут платить за еду");
         name = dishName;
         description = dishDescription;
         cost = dishCost;
@@ -33,16 +31,22 @@ public abstract class MenuItem {
         return description;
     }
 
-
     @Override
-    public String toString() {
-       return String.format("%1$s%2$s",
-                (name != null && !name.isEmpty()) ? name : "",
-                (cost != 0) ? ", " + cost + "р.": "").trim();
+    public int compareTo(MenuItem o) {
+        if (o.cost > cost) return -1;
+        if (o.cost < cost) return 1;
+        return 0;
     }
 
     @Override
-    public boolean equals(Object obj){
+    public String toString() {
+        return String.format("%1$s%2$s",
+                (name != null && !name.isEmpty()) ? name : "",
+                (cost != 0) ? ", " + cost + "р." : "").trim();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this)
             return true;
 
@@ -55,8 +59,8 @@ public abstract class MenuItem {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return name.hashCode()
-                ^cost;
+                ^ cost;
     }
 }
