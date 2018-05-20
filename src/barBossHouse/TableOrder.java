@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TableOrder implements Order {
+
     private int size;
     private static final int DEFAULT_SIZE = 16;
     private MenuItem[] menuItems;
@@ -16,7 +17,6 @@ public class TableOrder implements Order {
         this.menuItems = new MenuItem[DEFAULT_SIZE];
         this.localDateTime = LocalDateTime.now();
     }
-
 
     public TableOrder(int dishCount, Customer customer) {
         this(new MenuItem[dishCount], customer);
@@ -270,7 +270,7 @@ public class TableOrder implements Order {
         if (obj == this)
             return true;
 
-        if (obj == null || obj.getClass() != this.getClass())
+        if (obj == null || !(obj instanceof TableOrder))
             return false;
 
         TableOrder tableOrder = (TableOrder) obj;

@@ -2,10 +2,10 @@ package barBossHouse;
 
 
 public abstract class MenuItem implements java.lang.Comparable<MenuItem> {
-    private static final int DEFAULT_COST = 0;
-    private String name;
-    private int cost;
-    private String description;
+    final static int DEFAULT_COST = 0;
+    String name;
+    int cost;
+    String description;
 
     protected MenuItem(String dishName, String dishDescription) {
         this(dishName, dishDescription, DEFAULT_COST);
@@ -40,9 +40,10 @@ public abstract class MenuItem implements java.lang.Comparable<MenuItem> {
 
     @Override
     public String toString() {
-        return String.format("%1$s%2$s",
+        return String.format("%1$s%2$s%3$s",
                 (name != null && !name.isEmpty()) ? name : "",
-                (cost != 0) ? ", " + cost + "р." : "").trim();
+                (cost != 0) ? ", " + cost + "р." : "",
+                (!description.isEmpty()) ? description : "").trim();
     }
 
     @Override

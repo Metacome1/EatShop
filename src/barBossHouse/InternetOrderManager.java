@@ -20,6 +20,23 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
         }
     }
 
+
+    public int remove(Order order) {
+        QueueNode node = head;
+        QueueNode prev = head;
+        int count = 0;
+        while (node != null) {
+            if (node.getValue().equals(order)) {
+                prev.setNext(node.getNext());
+                size--;
+                count++;
+            }
+            prev = node;
+            node = node.getNext();
+        }
+        return count;
+    }
+
     @Override
     public void addFirst(Order order) {
         QueueNode queueNode = new QueueNode();

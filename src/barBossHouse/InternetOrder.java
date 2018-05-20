@@ -13,13 +13,22 @@ public class InternetOrder implements Order {
     private LocalDateTime localDateTime;
 
     public InternetOrder() {
+        head = null;
     }
 
-
-
-    public InternetOrder(Customer customer) {
-        this.localDateTime = LocalDateTime.now();
+    public InternetOrder(Customer customer, MenuItem[] menuItems) {
         this.customer = customer;
+        this.size = menuItems.length;
+        this.localDateTime = LocalDateTime.now();
+        addItems(menuItems);
+    }
+
+    private void addItems(MenuItem[] menuItems) {
+        if (menuItems.length > 0) {
+            for (int i = 0; i < menuItems.length; i++) {
+                add(menuItems[i]);
+            }
+        }
     }
 
     public Customer getCustomer() {
@@ -263,7 +272,7 @@ public class InternetOrder implements Order {
         if (obj == this)
             return true;
 
-        if (obj == null || obj.getClass() != this.getClass())
+        if (obj == null || !(obj instanceof InternetOrder))
             return false;
 
         InternetOrder internetOrder = (InternetOrder) obj;

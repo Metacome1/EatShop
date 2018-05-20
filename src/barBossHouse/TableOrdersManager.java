@@ -10,7 +10,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
     private TableOrder[] orders;
     private int capacity = DEFAULT_CAPACITY_VALUE;
 
-    TableOrdersManager(){}
+    public TableOrdersManager(){}
 
     public TableOrdersManager(int tablesCount) {
         orders = new TableOrder[tablesCount];
@@ -67,6 +67,21 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
             }
         }
         return (-1);
+    }
+
+    public int remove(Order order){
+        int count = 0;
+        for(int i = 0; i < this.orders.length; i++) {
+            if (this.orders[i] != null && this.orders[i].equals(order)) {
+                if(i < this.capacity - 1)
+                    System.arraycopy(this.orders, i + 1, this.orders, i, this.capacity - (i + 1));
+                this.orders[this.capacity - 1] = null;
+                this.capacity--;
+                i--;
+                count++;
+            }
+        }
+        return count;
     }
 
     public int removeAllTableOrder(TableOrder tableOrder) {

@@ -53,7 +53,11 @@ final public class Customer {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        return builder.append(getClass().getSimpleName()).append(":").append(firstName.isEmpty() ? "" :firstName + " ").append(secondName.isEmpty() ? "":secondName).append(", ").append(getAge()).append(" ").append(address.toString()).toString().trim();
+        return builder.append(getClass().getSimpleName())
+                .append(":").append(firstName.isEmpty() ? "" :firstName + " ")
+                .append(secondName.isEmpty() ? "":secondName)
+                .append(", ").append(getAge()).append(" ")
+                .append(address.toString()).toString().trim();
     }
 
     @Override

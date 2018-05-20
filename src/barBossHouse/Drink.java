@@ -47,10 +47,14 @@ final public class Drink extends MenuItem implements Alcoholable {
 
     @Override
     public String toString() {
-        return super.toString() + String.format("%1$s%2$s%3$s",
+        return String.format("%1$s%2$s%3$s%4$s%5$s%6$s%7$s",
+                (getClass().getSimpleName()),
                 (type),
-                (getDescription() != null && !getDescription().isEmpty()) ? " " + getDescription() : "",
-                (alcoholVol != 0) ? ", " + alcoholVol + "р.": "").trim();
+                ((!getName().isEmpty()) ? " " + getName() : ""),
+                ((getCost() == 0) ? ", " + getCost() + "p." : ""),
+                ((isAlcoholicDrink()) ? Alcoholable.class.getSimpleName() + ": ": ""),
+                ((isAlcoholicDrink()) ? ", " + alcoholVol + "%": ""),
+                ((getDescription() != null && !getDescription().isEmpty()) ? " " + getDescription() : "")).trim();
     }
 
     //todo сделай так же как в Dish COMPLITED
