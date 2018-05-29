@@ -70,7 +70,10 @@ final public class Address {
     }
     @Override
     public String toString() {
-
+        /* todo это не форматный вывод, это какая-то фигня.
+        Здесь нафиг не нужно заморачиваться на значениях полей,
+        а все запятые - в строке формата надо поместить.
+        И не забудь правильные спецификаторы форматов использовать */
         return  String.format("%1$s%2$s%3$s%4$s%5$s%6$s%7$s",
                 getClass().getSimpleName() + ": ",
                 (cityName != null && !cityName.isEmpty()) ? cityName : "",

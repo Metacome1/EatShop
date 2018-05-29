@@ -25,7 +25,7 @@ public class InternetOrder implements Order {
 
     private void addItems(MenuItem[] menuItems) {
         if (menuItems.length > 0) {
-            for (int i = 0; i < menuItems.length; i++) {
+            for (int i = 0; i < menuItems.length; i++) { //todo foreach
                 add(menuItems[i]);
             }
         }
@@ -47,6 +47,7 @@ public class InternetOrder implements Order {
         this.localDateTime = localDateTime;
     }
 
+    //todo а где здесь выброс UnlawfulActionException?
     public boolean add(MenuItem menuItem) {
         ListNode listNode = new ListNode();
         listNode.setValue(menuItem);
@@ -107,8 +108,7 @@ public class InternetOrder implements Order {
     }
 
     public int removeAll(String dishName) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
-        //todo без вызова remove - идешь по нодам, сравниваешь имена и сразу удаляешь COMPLITED
+
         int deletedDishCount = 0;
         ListNode listNode = head;
         while (listNode != null) {
@@ -131,8 +131,7 @@ public class InternetOrder implements Order {
     }
 
     public int removeAll(MenuItem menuItem) {
-        //todo хранишь ссылку на предыдущий нод COMPLITED
-        //todo без вызова remove - идешь по нодам, сравниваешь имена и сразу удаляешь COMPLITED
+
         int deletedDishCount = 0;
         ListNode listNode = head;
         while (listNode != null) {
@@ -174,13 +173,14 @@ public class InternetOrder implements Order {
         ListNode listNode;
         allCost = 0;
         listNode = tail;
+        //todo  foreach (MenuItem item : this)
         for (int i = 0; i < size; i++) {
             allCost += listNode.getValue().getCost();
             listNode = listNode.getNext();
         }
         return allCost;
     }
-
+    //todo  foreach (MenuItem item : this)
     public int itemQuantity(String NameInArray) {
         ListNode listNode;
         int allNameInArray;
@@ -192,7 +192,7 @@ public class InternetOrder implements Order {
         }
         return allNameInArray;
     }
-
+    //todo  foreach (MenuItem item : this)
     public int itemQuantity(MenuItem menuItem) {
         ListNode listNode;
         int allDishInArray;
@@ -206,9 +206,8 @@ public class InternetOrder implements Order {
     }
 
     public String[] itemsName() {
-        String[] strings = new String[0];
+        String[] strings;
         if (size != 0) {
-            //TODO рефакторь COMPLITED
             int index = 0;
             strings = new String[size];
             ListNode listNode = head;
@@ -231,6 +230,8 @@ public class InternetOrder implements Order {
             }
             strings = cutString(strings);
         }
+        else
+            strings = new String[0];
         return strings;
     }
 
@@ -259,6 +260,7 @@ public class InternetOrder implements Order {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getClass().getSimpleName()).append(":").append(size).append("\n").append(getCustomer().toString()).append("\n");
         ListNode listNode = head;
+        //todo  foreach (MenuItem item : this)
         while (listNode != null) {
             stringBuilder.append(listNode.getValue().toString()).append("\n");
             listNode = listNode.getNext();
@@ -277,14 +279,16 @@ public class InternetOrder implements Order {
 
         InternetOrder internetOrder = (InternetOrder) obj;
 
+        //todo какого фига в строчке далее идет каст к TableOrder?
         return (customer.equals(((TableOrder) obj).getCustomer()) & internetOrder.size == internetOrder.itemQuantity());
+
     }
 
     @Override
     public int hashCode() {
         return customer.hashCode()
                 ^ size
-                ^ head.getValue().hashCode()
+                ^ head.getValue().hashCode() //todo в hashCode() обычно участвуют те же поля, что и в equals()
                 ^ tail.getValue().hashCode()
                 ^ localDateTime.hashCode();
     }
@@ -448,7 +452,7 @@ public class InternetOrder implements Order {
         ListNode node = head;
         while (node != tail){
             ListNode nextNode = node.getNext();
-            remove(node);
+            remove(node); //todo неверно, он у тебя вызывает версию remove(Object o), а ты туда нод пихаешь. Ручками ссылки надо обнулять
             node = nextNode;
         }
         head = null;
@@ -474,6 +478,7 @@ public class InternetOrder implements Order {
         return menuItem;
     }
 
+    //todo а где здесь выброс UnlawfulActionException?
     @Override
     public void add(int index, MenuItem element) {
         if(index < 0 || index > size - 1)

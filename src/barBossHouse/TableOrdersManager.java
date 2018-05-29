@@ -12,6 +12,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
 
     public TableOrdersManager(){}
 
+    //todo где выброс NegativeSizeException
     public TableOrdersManager(int tablesCount) {
         orders = new TableOrder[tablesCount];
         capacity = tablesCount;
@@ -30,6 +31,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
         } else return null;
     }
 
+    //todo вот зачем ты здесь проверяешь на UnlawfulActionException, когда в методе add Order-а оно все равно проверяется и выбрасывается
     public boolean addDishToOrder(int tableNumber, MenuItem menuItem) {
         if(menuItem instanceof Drink) {
             Drink drink = (Drink) menuItem;
@@ -38,7 +40,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
         if (orders[tableNumber] != null) throw new NoFreeTableException("Столик под номером:" + tableNumber + " занят");
         if (menuItem != null) {
             if (isValidNumber(tableNumber)) {
-                orders[tableNumber].add(menuItem);
+                orders[tableNumber].add(menuItem); //ибо этот метод выбросит тебе UnlawfulActionException если что не так
                 return true;
             }
         }
@@ -69,6 +71,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
         return (-1);
     }
 
+    //todo нене в TableOrderManager логика другая. Тут сдвигать массив после удаления не надо
     public int remove(Order order){
         int count = 0;
         for(int i = 0; i < this.orders.length; i++) {
@@ -84,6 +87,7 @@ public class TableOrdersManager implements OrdersManager, List<Order> {
         return count;
     }
 
+    //todo тип параметра - интерфейс Order
     public int removeAllTableOrder(TableOrder tableOrder) {
         int removeAllMenuItems;
         removeAllMenuItems = 0;
@@ -147,7 +151,7 @@ public int midlCost500(){
 
     public int ordersCostSummary() {
         int cents = 0;
-        TableOrder[] ordersTempArray = getOrders();
+        TableOrder[] ordersTempArray = getOrders(); //todo ненене нафиг здесь массив создавать. foreach (Order order : this) с проверкой Order!=null
         if (ordersTempArray != null) {
             for (int i = 0; i < ordersTempArray.length; i++) {
                 cents += ordersTempArray[i].costTotal();
@@ -159,14 +163,14 @@ public int midlCost500(){
     public int ordersQuantity() {
         int ordersQuantity;
         ordersQuantity = 0;
-        for (int i = 0; i < orders.length ; i++)
+        for (int i = 0; i < orders.length ; i++) //todo foreach
             if (orders[i] != null) ordersQuantity++;
         return ordersQuantity;
     }
 
     public int getDishesCountInOrders() {
         int getDishesCountInOrders = 0;
-        TableOrder[] ordersTempArray = getOrders();
+        TableOrder[] ordersTempArray = getOrders();//todo ненене нафиг здесь массив создавать. foreach (Order order : this) с проверкой Order!=null
         if (ordersTempArray != null) {
             for (int i = 0; i < ordersTempArray.length; i++) {
                 getDishesCountInOrders += ordersTempArray[i].itemQuantity();
@@ -188,7 +192,7 @@ public int midlCost500(){
     public int itemQuantity(String name)
     {
         int itemQuantity = 0;
-        TableOrder[] ordersTmp = getOrders();
+        TableOrder[] ordersTmp = getOrders(); //todo ненене нафиг здесь массив создавать. foreach (Order order : this) с проверкой Order!=null
         if(ordersTmp != null)
         {
             for(int i=0; i<ordersTmp.length; i++)
@@ -202,7 +206,7 @@ public int midlCost500(){
 
     //odo аналогично InternetOrderManager COMPLITED
 
-    public int itemQuantity(MenuItem menuItem)
+    public int itemQuantity(MenuItem menuItem)  //todo ненене нафиг здесь массив создавать. foreach (Order order : this) с проверкой Order!=null
     {
         int itemQuantity = 0;
         TableOrder[] ordersTmp = getOrders();
@@ -220,9 +224,9 @@ public int midlCost500(){
     @Override
     public int countMenuItemsNowDay(LocalDate localDate) {
         int countMenuItemsNowDay = 0;
-        LocalDate help;
+        LocalDate help; //todo и нафиг тебе не используемая переменная?
         help = orders[1].getLocalDateTime().toLocalDate();
-        for (int i = 0; i < orders.length ; i++) {
+        for (int i = 0; i < orders.length ; i++) { //todo  foreach (Order order : this) с проверкой Order!=null
             if (localDate.equals(orders[i].getLocalDateTime().toLocalDate()))countMenuItemsNowDay++;
         }
         return countMenuItemsNowDay;
@@ -230,16 +234,18 @@ public int midlCost500(){
 
     @Override
     public InternetOrderManager getMenuItemNowDay(LocalDate localDate){
+        //todo А какого компилятора в классе TableOrderManager у тебя возвращается InternetOrderManager?!?!
         InternetOrderManager internetOrderManager = new InternetOrderManager();
-        for (int i = 0; i < orders.length; i++) {
+        for (int i = 0; i < orders.length; i++) { //todo  foreach (Order order : this) с проверкой Order!=null
             if(orders[i].getLocalDateTime().toLocalDate().equals(localDate)) internetOrderManager.push(orders[i]);
         }
         return internetOrderManager;
     }
 
     public InternetOrderManager getMenuItemsCustomer(Customer customer){
+        //todo А какого компилятора в классе TableOrderManager у тебя возвращается InternetOrderManager?!?!
         InternetOrderManager internetOrderManager = new InternetOrderManager();
-        for (int i = 0; i < orders.length; i++) {
+        for (int i = 0; i < orders.length; i++) {//todo  foreach (Order order : this) с проверкой Order!=null
             if(orders[i].getCustomer().equals(customer))internetOrderManager.push(orders[i]);
         }
         return internetOrderManager;
@@ -327,7 +333,7 @@ public int midlCost500(){
 
     @Override
     public boolean addAll(int index, Collection<? extends Order> c) {
-        Object[] orders = c.toArray();
+        Object[] orders = c.toArray(); //todo вот почему в методе выше ты не делал массив из коллекции, а здесь почему то решил?!?! Метод выше корректный
         for (Object order : orders) {
             if (!add((Order) order)) return false;
         }
@@ -336,7 +342,7 @@ public int midlCost500(){
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        Object[] orders = c.toArray();
+        Object[] orders = c.toArray(); //todo for по c, а не по массиву, полученному из c
         for (Object order : orders) {
             if (!remove(order)) return false;
         }
@@ -379,7 +385,7 @@ public int midlCost500(){
         int firstHashCode = 0;
         int secondHashCode = 0;
 
-        for (int i = 0; i < capacity; i++) {
+        for (int i = 0; i < capacity; i++) { //todo  foreach (Order order : this) с проверкой Order!=null
             firstHashCode += this.orders[i].hashCode();
             secondHashCode += tableOrdersManager.orders[i].hashCode();
         }
@@ -390,7 +396,7 @@ public int midlCost500(){
     @Override
     public int hashCode(){
         return Arrays.hashCode(orders)
-                ^ capacity;
+                ^ capacity; //todo а нафига capacity?
     }
 
     @Override
@@ -411,6 +417,7 @@ public int midlCost500(){
         return null;
     }
 
+    //todo удали этот метод, а addOrder переименуй под add и т.д. - это про удаление дублей методов
     @Override
     public void add(int index, Order element) {
         if (index >= 0 & index < orders.length) {

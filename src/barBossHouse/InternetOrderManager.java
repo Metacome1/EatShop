@@ -267,7 +267,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
 
     public void push(Order order) {
         QueueNode queueNode = head;
-        while (head != null) {
+        while (head != null) { // todo foreach (Order order : this)
             if (queueNode.getValue().getCustomer().equals(order.getCustomer()) && queueNode.getValue().getLocalDateTime().equals(order.getLocalDateTime())) throw new AlreadyAddedException("Этот заказ уже существует");
             queueNode = queueNode.getNext();
         }
@@ -316,7 +316,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
         QueueNode queueNode;
         allCost = 0;
         queueNode = head;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { // todo foreach (Order order : this)
             allCost += queueNode.getValue().costTotal();
             queueNode = queueNode.getNext();
         }
@@ -338,7 +338,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public int itemQuantity(String string) {
         int itemQuantity = 0;
         QueueNode queueNode = head;
-        while (queueNode != null) {
+        while (queueNode != null) { // todo foreach (Order order : this)
             itemQuantity += queueNode.getValue().itemQuantity(string);
             queueNode = queueNode.getNext();
         }
@@ -348,7 +348,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public int itemQuantity(MenuItem menuItem) {
         int itemQuantity = 0;
         QueueNode queueNode = head;
-        while (queueNode != null) {
+        while (queueNode != null) { // todo foreach (Order order : this)
             itemQuantity += queueNode.getValue().itemQuantity(menuItem);
             queueNode = queueNode.getNext();
         }
@@ -359,7 +359,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public int countMenuItemsNowDay(LocalDate localDate) {
         int countMenuItemsNowDay = 0;
         QueueNode queueNode = head;
-        while (queueNode != null) {
+        while (queueNode != null) { // todo foreach (Order order : this)
             if (localDate.equals(queueNode.getValue().getLocalDateTime().toLocalDate())) countMenuItemsNowDay++;
             queueNode = queueNode.getNext();
         }
@@ -370,7 +370,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public InternetOrderManager getMenuItemNowDay(LocalDate localDate) {
         InternetOrderManager internetOrderManager = new InternetOrderManager();
         QueueNode queueNode = head;
-        while (queueNode != null) {
+        while (queueNode != null) { // todo foreach (Order order : this)
             if (localDate.equals(queueNode.getValue().getLocalDateTime().toLocalDate()))
                 internetOrderManager.push(queueNode.getValue());
             queueNode = queueNode.getNext();
@@ -382,7 +382,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public InternetOrderManager getMenuItemsCustomer(Customer customer){
         InternetOrderManager internetOrderManager = new InternetOrderManager();
         QueueNode queueNode = head;
-        while (queueNode != null) {
+        while (queueNode != null) { // todo foreach (Order order : this)
             if (queueNode.getValue().getCustomer().equals(customer))
                 internetOrderManager.push(queueNode.getValue());
             queueNode = queueNode.getNext();
@@ -456,7 +456,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(Object o) { //todo вот это реализация =))))))) Делай =)))
         return false;
     }
 
@@ -474,7 +474,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
     public boolean addAll(Collection<? extends Order> c) {
         boolean addAll = true;
         for (Order order: c) {
-            addAll &= add(order);
+            addAll &= add(order); //todo здесь логичнее было или-равно, а не и-равно
         }
         return addAll;
     }
@@ -517,7 +517,7 @@ public class InternetOrderManager implements OrdersManager, Deque<Order> {
         QueueNode queueNode = head;
         while (queueNode != tail){
             QueueNode nextNode = queueNode.getNext();
-            remove(queueNode);
+            remove(queueNode); //todo некорректно нод передавать в этот метод. ручками ссылки делай null
             queueNode = nextNode;
         }
         head = null;

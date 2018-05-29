@@ -6,6 +6,7 @@ import barBossHouse.Order;
 import java.util.Collection;
 import java.util.Iterator;
 
+//todo аналогично ControlledTableOrderManager
 public class ControlledInternetOrderManager extends InternetOrderManager {
 
     protected Source<Order> orderSource;

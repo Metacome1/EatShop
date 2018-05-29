@@ -12,6 +12,7 @@ final public class Dish extends MenuItem {
 
     @Override
     public String toString() {
+        //todo return String.format(А уже вызов super.toString() внутри делается)
         return super.toString() + String.format("%1$s",
                 (getDescription() != null && !getDescription().isEmpty()) ? " " + getDescription() : "").trim();
     }

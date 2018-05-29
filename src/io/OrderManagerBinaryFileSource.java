@@ -26,6 +26,7 @@ public class OrderManagerBinaryFileSource extends OrderManagerFileSource {
                     order = new TableOrder();
                     break;
             }
+            //todo вот это логично было в метод Customer readCustomer(DataInputStream) вынести - метод возвращает ссылку на экземпляр Customer
             order.setCustomer(new Customer(
                     in.readUTF(),
                     in.readUTF(),
@@ -40,6 +41,7 @@ public class OrderManagerBinaryFileSource extends OrderManagerFileSource {
             int size = in.readInt();
 
             for (int i = 0; i < size; i++) {
+                //todo вот это логично было в метод MenuItem readItem(DataOutputStream) вынести - метод возвращает ссылку на экземпляр MenuItem
                 switch (in.readUTF()) {
                     case "Dish":
                         order.add(new Dish(
@@ -67,6 +69,7 @@ public class OrderManagerBinaryFileSource extends OrderManagerFileSource {
 
     public void store(Order order) {
         try(DataOutputStream out = new DataOutputStream(new FileOutputStream(super.getPath()))) {
+            //todo вот это логично было в метод writeCustomer(Сustomer, DataOutputStream) вынести
             out.writeUTF(order.getCustomer().getFirstName());
             out.writeUTF(order.getCustomer().getSecondName());
             out.writeInt(order.getCustomer().getAge());
@@ -80,6 +83,7 @@ public class OrderManagerBinaryFileSource extends OrderManagerFileSource {
             out.writeInt(order.size());
 
             for (MenuItem menuItem : order) {
+                //todo вот это логично было в метод writeItem(MenuItem, DataOutputStream) вынести
                 out.writeUTF(menuItem.getClass().getName());
                 out.writeUTF(menuItem.getName());
                 out.writeInt(menuItem.getCost());

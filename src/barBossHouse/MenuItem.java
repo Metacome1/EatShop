@@ -2,6 +2,7 @@ package barBossHouse;
 
 
 public abstract class MenuItem implements java.lang.Comparable<MenuItem> {
+    //todo поля приватные не?
     final static int DEFAULT_COST = 0;
     String name;
     int cost;
@@ -33,6 +34,7 @@ public abstract class MenuItem implements java.lang.Comparable<MenuItem> {
 
     @Override
     public int compareTo(MenuItem o) {
+        //todo return o.cost - this.cost не?
         if (o.cost > cost) return -1;
         if (o.cost < cost) return 1;
         return 0;

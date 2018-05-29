@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/*todo не совсем правильно здесь foreach по menuItem юзать, ибо по массиву он пойдет до length, а не size
+так как ты реализовал Iterable (через List), то корректнее делать foreach по this */
 public class TableOrder implements Order {
 
     private int size;
@@ -17,7 +19,7 @@ public class TableOrder implements Order {
         this.menuItems = new MenuItem[DEFAULT_SIZE];
         this.localDateTime = LocalDateTime.now();
     }
-
+    //todo где выброс NegativeSizeException
     public TableOrder(int dishCount, Customer customer) {
         this(new MenuItem[dishCount], customer);
         this.localDateTime = LocalDateTime.now();
@@ -126,7 +128,7 @@ public class TableOrder implements Order {
     public int itemQuantity(String str) {
         int itemQuantity;
         itemQuantity = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { //todo foreach (MenuItem item : this) {}
             if (menuItems[i].getName().equals(str)) itemQuantity++;
         }
         return itemQuantity;
@@ -136,7 +138,7 @@ public class TableOrder implements Order {
     public int itemQuantity(MenuItem menuItem) {
         int itemQuatity;
         itemQuatity = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {//todo foreach (MenuItem item : this) {}
             if (menuItems[i].equals(menuItem)) itemQuatity++;
         }
         return itemQuatity;
@@ -148,7 +150,7 @@ public class TableOrder implements Order {
         return getDishes;
     }
 
-    public int costTotal() {
+    public int costTotal() {//todo foreach (MenuItem item : this) {}
         int costTotal = 0;
         for (int i = 0; i < size; i++) {
             costTotal += menuItems[i].getCost();
@@ -158,7 +160,7 @@ public class TableOrder implements Order {
 
     public int getDishSumPrice(String name) {
         int getDishSumPrice = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {//todo foreach (MenuItem item : this) {}
             if (menuItems[i].getName().equalsIgnoreCase(name)) getDishSumPrice += menuItems[i].getCost();
         }
         return getDishSumPrice;
@@ -203,7 +205,7 @@ public class TableOrder implements Order {
     public int getDishCount(MenuItem menuItem) {
         if (size != 0) {
             int getDishCount = 0;
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {//todo foreach (MenuItem item : this) {}
                 if (menuItems[i].equals(menuItem))
                     getDishCount++;
             }
@@ -214,7 +216,7 @@ public class TableOrder implements Order {
     public int getDishCount(String name) {
         if (size != 0) {
             int getDishCount = 0;
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {//todo foreach (MenuItem item : this) {}
                 if (menuItems[i].getName().equals(name))
                     getDishCount++;
             }
@@ -223,6 +225,7 @@ public class TableOrder implements Order {
     }
 
     private int getSize() {
+        //todo какого здесь цикл делает? У тебя же size поле
         for (int i = 0; i < menuItems.length; i++) {
             if (menuItems[i] == null) return i;
         }
@@ -256,10 +259,10 @@ public class TableOrder implements Order {
 
     @Override
     public String toString() {
-        MenuItem[] menuItems = getItems();
+        MenuItem[] menuItems = getItems(); //todo вот зачем ты делаешь это здесь? циклом по this.menuItems при i=0..size не?
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getClass().getSimpleName()).append(":").append(size).append("\n");
-        for (int i = 0; i < menuItems.length; i++) {
+        for (int i = 0; i < menuItems.length; i++) {//todo foreach (MenuItem item : this) {}
             stringBuilder.append(menuItems[i].toString()).append("\n");
         }
         return stringBuilder.toString();
@@ -281,7 +284,7 @@ public class TableOrder implements Order {
         int hashCodeTableOrder = 0;
         int hashCodeEquals = 0;
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) { //todo foreach (MenuItem item : this) {}
             hashCodeTableOrder += this.menuItems[i].hashCode();
             hashCodeEquals += tableOrder.menuItems[i].hashCode();
         }
@@ -292,7 +295,7 @@ public class TableOrder implements Order {
     public int hashCode() {
         int hash = 0;
         MenuItem[] menuItems = getItems();
-        for (int i = 0; i < menuItems.length; i++) {
+        for (int i = 0; i < menuItems.length; i++) { //todo foreach (MenuItem item : this) {}
             hash ^= menuItems.hashCode();
         }
         return customer.hashCode()
@@ -313,6 +316,7 @@ public class TableOrder implements Order {
 
     @Override
     public boolean contains(Object o) {
+
         for (MenuItem m : menuItems) {
             if (m.equals(o)) return true;
         }
@@ -534,6 +538,7 @@ public class TableOrder implements Order {
         return listIterator(0);
     }
 
+    //todo не do - копипаст у Киржаева =)))))
     @Override
     public ListIterator<MenuItem> listIterator(int index) {
         if(index < 0 || index > size - 1)

@@ -47,6 +47,10 @@ final public class Drink extends MenuItem implements Alcoholable {
 
     @Override
     public String toString() {
+        /* todo это не форматный вывод, это какая-то фигня.
+        Здесь нафиг не нужно заморачиваться на значениях полей,
+        а все запятые, приписки рублей и проценты - в строке формата надо поместить.
+        И не забудь правильные спецификаторы форматов использовать */
         return String.format("%1$s%2$s%3$s%4$s%5$s%6$s%7$s",
                 (getClass().getSimpleName()),
                 (type),
@@ -57,7 +61,6 @@ final public class Drink extends MenuItem implements Alcoholable {
                 ((getDescription() != null && !getDescription().isEmpty()) ? " " + getDescription() : "")).trim();
     }
 
-    //todo сделай так же как в Dish COMPLITED
     @Override
     public boolean equals(Object obj){
         return (super.equals(obj) && getDescription().equals(((MenuItem) obj).getDescription()));

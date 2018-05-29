@@ -2,6 +2,7 @@ package barBossHouse;
 
 import io.*;
 
+//todo смотри TextFileBasedOrdersFactory
 public class SerializedFileBasedOrdersFactory extends OrdersFactory {
 
     private OrderManagerSerializedFileSource source;
@@ -58,28 +59,24 @@ public class SerializedFileBasedOrdersFactory extends OrdersFactory {
     @Override
     OrdersManager createInternetOrderManager(){
         ControlledInternetOrderManager controlledInternetOrderManager = new ControlledInternetOrderManager();
-        //todo  sourse.create(controlledInternetOrderManager) по-моему по заданию чего-то недописано
         return controlledInternetOrderManager;
     }
 
     @Override
     OrdersManager createInternetOrderManager(Order[] orders){
         ControlledInternetOrderManager controlledInternetOrderManager = new ControlledInternetOrderManager(orders);
-        //todo  sourse.create(controlledInternetOrderManager) Или я тупой
         return controlledInternetOrderManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(){
         ControlledTableOrderManager controlledTableOrderManager = new ControlledTableOrderManager();
-        //todo  sourse.create(controlledTableOrderManager) или слепой
         return controlledTableOrderManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(int tablesCount){
         ControlledTableOrderManager controlledTableOrderManager = new ControlledTableOrderManager(tablesCount);
-        //todo  sourse.create(controlledTableOrderManager) все таки больше склоняюсь, что задание недописано
         return controlledTableOrderManager;
     }
 }

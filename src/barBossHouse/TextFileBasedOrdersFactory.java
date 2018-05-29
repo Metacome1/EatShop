@@ -2,8 +2,10 @@ package barBossHouse;
 
 import io.*;
 
+//todo объясню на примере этой фабрики. В остальных аналогично.
 public class TextFileBasedOrdersFactory extends OrdersFactory {
 
+    //todo Во-первых, Здесь хранишь не source, а ссылку на PATH!!
 
     private OrderManagerTextFileSource source;
 
@@ -20,7 +22,7 @@ public class TextFileBasedOrdersFactory extends OrdersFactory {
         return source.getPath();
     }
 
-
+    //todo во-вторых, вызывать source.create() при создании Order в фабрике НЕ НАДО - его вызываешь в OrderManager, в вызовах методо Add, AddAll
     @Override
     Order createInternetOrder() {
         ControlledInternetOrder controlledInternetOrder = new ControlledInternetOrder();
@@ -57,31 +59,35 @@ public class TextFileBasedOrdersFactory extends OrdersFactory {
         return controlledTableOrder;
     }
 
+    /*todo в третьих, в методах создания OrderManager-ов,
+      1) нужно создавать соответсвующий source (путь берется из атрибута фабрики Path)
+      2) в OrderManager ты передаешь ссылку на этот source, и на ЭТУ ФАБРИКУ (this)
+      3) фабрика будет использоваться OrderManager-ом для создания ордеров
+      4) а потом, логично нужно вызывать sourse.create(controlledInternetOrderManager)
+      при вызове каждого метода создания Ордерменеджера будет создаваться новый сурс
+      Далее смотри todoшки в controlledTableOrderManager
+     */
     @Override
     OrdersManager createInternetOrderManager(){
         ControlledInternetOrderManager controlledInternetOrderManager = new ControlledInternetOrderManager();
-        //todo  sourse.create(controlledInternetOrderManager) по-моему по заданию чего-то недописано
         return controlledInternetOrderManager;
     }
 
     @Override
     OrdersManager createInternetOrderManager(Order[] orders){
         ControlledInternetOrderManager controlledInternetOrderManager = new ControlledInternetOrderManager(orders);
-        //todo  sourse.create(controlledInternetOrderManager) Или я тупой
         return controlledInternetOrderManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(){
         ControlledTableOrderManager controlledTableOrderManager = new ControlledTableOrderManager();
-        //todo  sourse.create(controlledTableOrderManager) или слепой
         return controlledTableOrderManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(int tablesCount){
         ControlledTableOrderManager controlledTableOrderManager = new ControlledTableOrderManager(tablesCount);
-        //todo  sourse.create(controlledTableOrderManager) все таки больше склоняюсь, что задание недописано
         return controlledTableOrderManager;
     }
 

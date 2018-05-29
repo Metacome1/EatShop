@@ -27,8 +27,10 @@ public abstract class OrdersFactory {
                 return new BinaryFileBasedOrdersFactory();
             case SERIALIZED_FILE_BASED_ORDERS_FACTORY:
                 return new SerializedFileBasedOrdersFactory();
+                //
             case SOCKET_BASED_ORDERS_FACTORY:
                 //todo И все же непонятно, что тут происходит и должно происходить
+                //todo  ОТВЕТ - этой ветви пока вообще быть не должно, это на будущее - лабу по сокетам
                 return new OrdinaryOrdersFactory();
         }
         return new OrdinaryOrdersFactory();

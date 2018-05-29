@@ -2,6 +2,7 @@ package barBossHouse;
 
 import io.OrderManagerFileSource;
 
+//todo OrdinaryOrdersFactory создает ОБЫЧНЫЕ Ордера и ОрдерМэнеджеры, БЕЗ СУРСОВ. Метод setPath getPath выбрасывают UnsupportedOperationException
 public class OrdinaryOrdersFactory extends OrdersFactory {
 
     private OrderManagerFileSource source;
@@ -60,28 +61,24 @@ public class OrdinaryOrdersFactory extends OrdersFactory {
     @Override
     OrdersManager createInternetOrderManager(){
         InternetOrderManager internetOrderManager = new InternetOrderManager();
-        //todo  sourse.create(internetOrderManager) по-моему по заданию чего-то недописано
         return internetOrderManager;
     }
 
     @Override
     OrdersManager createInternetOrderManager(Order[] orders){
         InternetOrderManager internetOrderManager = new InternetOrderManager(orders);
-        //todo  sourse.create(internetOrderManager) Или я тупой
         return internetOrderManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(){
         TableOrdersManager tableOrdersManager = new TableOrdersManager();
-        //todo  sourse.create(tableOrdersManager) или слепой
         return tableOrdersManager;
     }
 
     @Override
     OrdersManager createTableOrdersManager(int tablesCount){
         TableOrdersManager tableOrdersManager = new TableOrdersManager(tablesCount);
-        //todo  sourse.create(tableOrdersManager) все таки больше склоняюсь, что задание недописано
         return tableOrdersManager;
     }
 

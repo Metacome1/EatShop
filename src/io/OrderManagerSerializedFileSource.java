@@ -18,7 +18,14 @@ public class OrderManagerSerializedFileSource extends OrderManagerFileSource {
         try{
             FileInputStream fileInputStream = new FileInputStream(new File(super.getPath()));
             ObjectInputStream in = new ObjectInputStream(fileInputStream);
-            order = (Order) in.readObject();
+            /* todo не верно сделал. Здесь нужно восстановить состояние объекта, переданного в качестве параметра
+             * то есть банально сделать
+             * Order newOrder = (Order) in.readObject();
+             * order.clear();
+             * order.addAll(newOrder);
+             * ну и еще кастомера так же установить
+             */
+            order = (Order) in.readObject(); // а это фигня
             in.close();
         }
         catch (Exception e){

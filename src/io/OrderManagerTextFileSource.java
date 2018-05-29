@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+//todo аналогично BinaryFileSOurce
 public class OrderManagerTextFileSource extends OrderManagerFileSource {
 
     public String getPath() {
